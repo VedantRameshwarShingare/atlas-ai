@@ -1,0 +1,9 @@
+[run]
+branch = True
+source = app
+omit =
+    */migrations/*
+
+[report]
+show_missing = True
+skip_covered = True

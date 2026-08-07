@@ -1,0 +1,19 @@
+# Web application framework.
+fastapi>=0.115.0
+# ASGI server for FastAPI.
+uvicorn[standard]>=0.30.0
+# ORM with asyncio support.
+sqlalchemy[asyncio]>=2.0.0
+# Database schema migration tooling.
+alembic>=1.13.0
+# PostgreSQL asynchronous driver.
+asyncpg>=0.27.0
+# Data validation and environment-driven settings.
+pydantic>=2.8.0
+pydantic-settings>=2.4.0
+# Load local environment variables from .env files.
+python-dotenv>=1.0.0
+# Asynchronous HTTP client for external providers.
+httpx>=0.27.0
+# Structured logging.
+loguru>=0.7.0

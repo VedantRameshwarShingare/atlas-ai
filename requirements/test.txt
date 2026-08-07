@@ -1,0 +1,2 @@
+# Compatibility entry point; development dependencies own the test toolchain.
+-r dev.txt
