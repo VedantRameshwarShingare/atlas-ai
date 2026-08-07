@@ -1,4 +1,4 @@
-"""FastAPI API package for Atlas AI."""
+"""HTTP API package exports."""
 
 from app.api.router import api_router
 

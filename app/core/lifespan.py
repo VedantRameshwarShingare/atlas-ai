@@ -1,26 +1,22 @@
-"""FastAPI lifespan management for application startup and shutdown."""
+"""FastAPI lifespan registration for bootstrap concerns."""
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
 
 from fastapi import FastAPI
 
-from app.config import settings
+from app.core.config import settings
 from app.core.logging import configure_logging
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """Initialize logging and configuration during app startup."""
+    """Initialize typed settings and logging for the application lifetime."""
     configure_logging()
-    settings
-
     app.state.settings = settings
-    app.state.startup_complete = True
-
     try:
         yield
     finally:
-        app.state.startup_complete = False
+        pass
