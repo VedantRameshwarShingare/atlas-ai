@@ -26,6 +26,7 @@ from app.services.telegram.types import (
     TelegramUpdatePayload,
     TelegramUserPayload,
 )
+from app.services.workspace_service import WorkspaceService
 
 
 class TelegramService:
@@ -162,6 +163,26 @@ class TelegramService:
                 "reason": "unlinked_user",
             }
 
+        # ---------------------------------------------------------
+        # Resolve the user's default workspace
+        # ---------------------------------------------------------
+        workspaces = await WorkspaceService(self._session).list_workspaces(
+            linked_user.id,
+        )
+
+        if not workspaces:
+            await self._client.send_message(
+                chat_id=chat_id,
+                text=("You don't have a workspace yet. Create a workspace in Atlas first, then try again."),
+            )
+            return {
+                "status": "rejected",
+                "reason": "no_workspace",
+            }
+
+        # Use the first workspace as the default Telegram workspace.
+        workspace = workspaces[0]
+
         conversation = await self._get_or_create_conversation(
             linked_user.id,
         )
@@ -175,6 +196,7 @@ class TelegramService:
                     "source": "telegram",
                     "telegram_chat_id": str(chat_id),
                     "telegram_user_id": telegram_user_id,
+                    "workspace_id": str(workspace.id),
                 },
             )
         )
@@ -187,6 +209,7 @@ class TelegramService:
         return {
             "status": "processed",
             "conversation_id": str(conversation.id),
+            "workspace_id": str(workspace.id),
         }
 
     async def _handle_command(

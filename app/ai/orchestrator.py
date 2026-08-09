@@ -17,6 +17,7 @@ from app.ai.types import ChatRequest, ChatResponse
 from app.rag.engine import RAGEngine
 from app.services.finance.service import FinanceService
 from app.tools.finance import FinanceTool
+from app.tools.watchlist import WatchlistTool
 
 
 class AtlasOrchestrator:
@@ -52,12 +53,20 @@ class AtlasOrchestrator:
         self._response_validator = response_validator or ResponseValidator()
         self._rag_engine = rag_engine
         self._context_budget = context_budget
+
+        # Shared finance service for finance and watchlist operations.
+        self._finance_service = FinanceService()
+
         self._register_default_tools()
 
     def _register_default_tools(self) -> None:
         """Register default tools for built-in intent routes."""
+
         if self._tool_registry.get("finance") is None:
-            self._tool_registry.register(FinanceTool(FinanceService()))
+            self._tool_registry.register(FinanceTool(self._finance_service))
+
+        if self._tool_registry.get("watchlist") is None:
+            self._tool_registry.register(WatchlistTool(self._finance_service))
 
     async def handle_request(self, request: ChatRequest) -> ChatResponse:
         """Process a chat request through the AI pipeline."""
@@ -65,6 +74,7 @@ class AtlasOrchestrator:
         intent_result = self._intent_detector.detect(request.text)
 
         required_tool_types = set(intent_result.required_tools)
+
         tool_names = [
             tool.name for tool in self._tool_registry.list() if getattr(tool, "tool_type", None) in required_tool_types
         ]
@@ -87,6 +97,7 @@ class AtlasOrchestrator:
 
         documents: list[dict[str, object]] = []
         citations: list[str] = []
+
         if self._rag_engine is not None and intent_result.intent in {
             IntentType.DOCUMENT_QA,
             IntentType.DOCUMENT_SUMMARY,
@@ -95,12 +106,18 @@ class AtlasOrchestrator:
             documents = list(rag_context.retrieved_chunks)
             citations = [citation.source or citation.document for citation in rag_context.citations]
 
-        memories = await self._memory_manager.load(user_id=str(request.user_id), query=request.text)
+        memories = await self._memory_manager.load(
+            user_id=str(request.user_id),
+            query=request.text,
+        )
+
         conversation_context = self._context_manager.build_context(
             request=request,
             conversation_history=request.conversation_history,
             memories=memories,
-            workspace_context={},
+            workspace_context={
+                "workspace_id": request.metadata.get("workspace_id"),
+            },
             documents=documents,
             tool_results=tool_results,
             metadata={
@@ -109,7 +126,10 @@ class AtlasOrchestrator:
             },
         )
 
-        prompt = self._prompt_builder.build(conversation_context, max_characters=self._context_budget)
+        prompt = self._prompt_builder.build(
+            conversation_context,
+            max_characters=self._context_budget,
+        )
 
         llm_response = await self._llm_client.create_response(input_text=prompt)
 
@@ -132,11 +152,21 @@ class AtlasOrchestrator:
 
         return validated_response
 
-    async def _extract_explicit_memory(self, request: ChatRequest) -> None:
+    async def _extract_explicit_memory(
+        self,
+        request: ChatRequest,
+    ) -> None:
         """Persist only explicit preference statements, never every conversation turn."""
+
         lowered = request.text.lower().strip()
         marker = "remember that "
+
         if request.user_id is not None and lowered.startswith(marker):
             value = request.text[len(marker) :].strip()
+
             if value:
-                await self._memory_manager.store(user_id=str(request.user_id), key="preference", value=value)
+                await self._memory_manager.store(
+                    user_id=str(request.user_id),
+                    key="preference",
+                    value=value,
+                )
