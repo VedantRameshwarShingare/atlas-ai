@@ -37,3 +37,7 @@ Copy `.env.example` to `.env` and set the required provider and database values 
 Use Python 3.12 or newer. Install development dependencies with `make install`, then use `make test`, `make lint`, and `make format` before opening a change. The project configuration for Ruff, Black, isort, mypy, and pytest lives in `pyproject.toml`.
 
 See the [installation guide](docs/installation.md) for uv setup and environment management.
+
+See [RAG architecture and setup](docs/rag.md) for document ingestion and retrieval configuration.
+
+See [chat API setup](docs/chat.md) for authenticated conversations and provider configuration.

@@ -1,4 +1,5 @@
 """Daily morning-brief worker."""
+
 from app.scheduler.workers.base import BaseWorker
 
 

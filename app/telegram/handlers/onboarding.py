@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from telegram import Update
 from telegram.ext import ContextTypes
 
 from app.telegram.state.onboarding_state import OnboardingState
+from telegram import Update
 
 
 async def onboarding_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

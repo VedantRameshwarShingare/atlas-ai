@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from telegram import Update
 from telegram.ext import ContextTypes
 
 from app.telegram.state.conversation_state import ConversationState
+from telegram import Update
 
 
 async def document_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

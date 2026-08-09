@@ -9,8 +9,16 @@ from app.ai.types import ChatResponse
 class ResponseFormatter:
     """Format AI output for Markdown, Telegram, or source-oriented contexts."""
 
-    def format(self, content: str, *, response_type: ResponseType = ResponseType.MARKDOWN, sources: list[str] | None = None, tool_citations: list[str] | None = None) -> ChatResponse:
+    def format(
+        self,
+        content: str,
+        *,
+        response_type: ResponseType = ResponseType.MARKDOWN,
+        sources: list[str] | None = None,
+        tool_citations: list[str] | None = None,
+    ) -> ChatResponse:
         """Normalize a raw response string into a typed ChatResponse."""
+
         return ChatResponse(
             content=content,
             response_type=response_type,

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from contextlib import AbstractAsyncContextManager, AbstractContextManager
 from contextvars import ContextVar, Token
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Literal
 from uuid import uuid4
 

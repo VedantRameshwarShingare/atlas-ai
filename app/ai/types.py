@@ -17,6 +17,10 @@ class ChatRequest:
     text: str = ""
     conversation_id: UUID | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
+    conversation_history: list[dict[str, Any]] = field(
+        default_factory=list,
+        repr=False,
+    )
 
 
 @dataclass(slots=True)
@@ -58,6 +62,7 @@ class IntentResult:
     intent: IntentType
     confidence: float
     required_tools: list[ToolType] = field(default_factory=list)
+    parameters: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass(slots=True)

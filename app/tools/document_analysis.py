@@ -17,7 +17,12 @@ class DocumentAnalysisTool(BaseTool):
 
     async def execute(self, **kwargs: Any) -> ToolResult:
         """Return a placeholder result indicating the tool is not implemented."""
-        return ToolResult(success=True, tool_name=self.name, data={"status": "interface_only"}, warnings=["No document processing implementation yet"])
+        return ToolResult(
+            success=True,
+            tool_name=self.name,
+            data={"status": "interface_only"},
+            warnings=["No document processing implementation yet"],
+        )
 
     async def summarize(self, **kwargs: Any) -> ToolResult:
         """Placeholder for document summarization."""

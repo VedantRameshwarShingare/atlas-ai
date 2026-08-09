@@ -13,6 +13,9 @@ class IntentDetector:
         """Return a structured intent classification and required tools."""
         lowered = text.lower()
 
+        if not text.strip():
+            return IntentResult(intent=IntentType.UNKNOWN, confidence=0.0)
+
         if "company" in lowered or "research" in lowered:
             return IntentResult(
                 intent=IntentType.COMPANY_RESEARCH,
@@ -34,7 +37,7 @@ class IntentDetector:
                 required_tools=[ToolType.DOCUMENT],
             )
 
-        if "document" in lowered and ("qa" in lowered or "question" in lowered):
+        if ("document" in lowered or "uploaded" in lowered) and ("qa" in lowered or "question" in lowered):
             return IntentResult(
                 intent=IntentType.DOCUMENT_QA,
                 confidence=0.88,
@@ -76,7 +79,42 @@ class IntentDetector:
                 required_tools=[ToolType.SEARCH],
             )
 
-        if not text.strip():
-            return IntentResult(intent=IntentType.UNKNOWN, confidence=0.0, required_tools=[])
+        finance_keywords = (
+            "stock",
+            "ticker",
+            "quote",
+            "trading at",
+            "price of",
+            "market price",
+            "historical",
+            "ohlc",
+            "candlestick",
+            "company profile",
+            "find the ticker",
+        )
+        if any(keyword in lowered for keyword in finance_keywords):
+            if "historical" in lowered or "ohlc" in lowered or "candlestick" in lowered:
+                return IntentResult(
+                    intent=IntentType.FINANCE_HISTORY,
+                    confidence=0.85,
+                    required_tools=[ToolType.FINANCE],
+                )
+            if "find the ticker" in lowered or ("find" in lowered and "ticker" in lowered):
+                return IntentResult(
+                    intent=IntentType.FINANCE_SEARCH,
+                    confidence=0.82,
+                    required_tools=[ToolType.FINANCE],
+                )
+            if "company profile" in lowered or "tell me about" in lowered:
+                return IntentResult(
+                    intent=IntentType.FINANCE_COMPANY,
+                    confidence=0.83,
+                    required_tools=[ToolType.FINANCE],
+                )
+            return IntentResult(
+                intent=IntentType.FINANCE_QUOTE,
+                confidence=0.84,
+                required_tools=[ToolType.FINANCE],
+            )
 
-        return IntentResult(intent=IntentType.CHAT, confidence=0.7, required_tools=[])
+        return IntentResult(intent=IntentType.CHAT, confidence=0.55, required_tools=[])

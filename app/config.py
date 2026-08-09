@@ -1,7 +1,7 @@
-"""Application configuration entrypoint."""
+"""Compatibility entrypoint for the authoritative typed configuration API."""
 
 from __future__ import annotations
 
-from app.core.settings import Settings, settings
+from app.core.config import Settings, settings
 
 __all__ = ["Settings", "settings"]

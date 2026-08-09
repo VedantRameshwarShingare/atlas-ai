@@ -34,3 +34,7 @@ class DocumentStore:
     async def list(self) -> list[DocumentRecord]:
         """List all stored documents."""
         return list(self._documents.values())
+
+    async def delete(self, *, document_id: str) -> bool:
+        """Remove a document record and report whether it existed."""
+        return self._documents.pop(document_id, None) is not None

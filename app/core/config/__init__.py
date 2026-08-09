@@ -3,7 +3,9 @@
 from app.core.config.environment import Environment
 from app.core.config.settings import (
     ApplicationSettings,
+    ChatSettings,
     DatabaseSettings,
+    DocumentSettings,
     FinanceAPISettings,
     LoggingSettings,
     OpenAISettings,
@@ -16,7 +18,9 @@ from app.core.config.settings import (
 
 __all__ = [
     "ApplicationSettings",
+    "ChatSettings",
     "DatabaseSettings",
+    "DocumentSettings",
     "Environment",
     "FinanceAPISettings",
     "LoggingSettings",

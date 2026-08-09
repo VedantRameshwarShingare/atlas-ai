@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import inspect
+from collections.abc import Awaitable, Callable
 from dataclasses import asdict, dataclass
-from typing import Any, Awaitable, Callable
+from typing import Any
 
 HealthProbe = Callable[[], Awaitable[Any] | Any]
 REQUIRED_COMPONENTS = ("application", "database", "openai", "finnhub", "yahoo", "sec", "chromadb", "scheduler")
@@ -41,4 +42,7 @@ class HealthChecker:
                 components.append(ComponentHealth(name, healthy, None if healthy else "probe reported unhealthy"))
             except Exception as exc:
                 components.append(ComponentHealth(name, False, f"{type(exc).__name__}: {exc}"))
-        return {"healthy": all(component.healthy for component in components), "components": [asdict(component) for component in components]}
+        return {
+            "healthy": all(component.healthy for component in components),
+            "components": [asdict(component) for component in components],
+        }

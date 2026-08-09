@@ -13,14 +13,26 @@ class ShortTermMemory:
 
     async def load(self, *, user_id: str, session_id: str | None = None, limit: int = 20) -> list[MemoryRecord]:
         """Load recent short-term memory entries."""
-        records = [record for record in self._records if record.user_id == user_id and record.category == MemoryCategory.SHORT_TERM]
+        records = [
+            record
+            for record in self._records
+            if record.user_id == user_id and record.category == MemoryCategory.SHORT_TERM
+        ]
         if session_id is not None:
             records = [record for record in records if record.metadata.get("session_id") == session_id]
         return records[-limit:]
 
-    async def save(self, *, user_id: str, key: str, value: str, session_id: str | None = None, metadata: dict | None = None) -> MemoryRecord:
+    async def save(
+        self, *, user_id: str, key: str, value: str, session_id: str | None = None, metadata: dict | None = None
+    ) -> MemoryRecord:
         """Persist a short-term memory entry."""
-        record = MemoryRecord(user_id=user_id, category=MemoryCategory.SHORT_TERM, key=key, value=value, metadata={**(metadata or {}), **({"session_id": session_id} if session_id else {})})
+        record = MemoryRecord(
+            user_id=user_id,
+            category=MemoryCategory.SHORT_TERM,
+            key=key,
+            value=value,
+            metadata={**(metadata or {}), **({"session_id": session_id} if session_id else {})},
+        )
         self._records.append(record)
         return record
 
@@ -39,5 +51,9 @@ class ShortTermMemory:
 
     async def search(self, *, user_id: str, query: str, limit: int = 10) -> list[MemoryRecord]:
         """Search short-term memory entries by query text."""
-        matches = [record for record in self._records if record.user_id == user_id and query.lower() in str(record.value).lower()]
+        matches = [
+            record
+            for record in self._records
+            if record.user_id == user_id and query.lower() in str(record.value).lower()
+        ]
         return matches[-limit:]

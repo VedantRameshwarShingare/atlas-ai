@@ -12,7 +12,9 @@ class MemoryStore(ABC):
     """Interface for persistent memory storage without implementation details."""
 
     @abstractmethod
-    async def load(self, *, user_id: str, category: str | None = None, key: str | None = None, limit: int = 50) -> list[MemoryRecord]:
+    async def load(
+        self, *, user_id: str, category: str | None = None, key: str | None = None, limit: int = 50
+    ) -> list[MemoryRecord]:
         """Load memory entries matching the supplied filters."""
 
     @abstractmethod

@@ -24,4 +24,4 @@ class Memory(Base, TimestampedMixin):
     memory_type: Mapped[str] = mapped_column(String(50), default="fact", nullable=False)
     confidence: Mapped[float] = mapped_column(nullable=False, default=0.0)
 
-    user: Mapped["User"] = relationship(back_populates="memories")
+    user: Mapped[User] = relationship(back_populates="memories")

@@ -19,12 +19,28 @@ class AsyncProviderMock:
         return {"available": True}
 
 
-class MockOpenAI(AsyncProviderMock): pass
-class MockFinnhub(AsyncProviderMock): pass
-class MockYahoo(AsyncProviderMock): pass
-class MockSEC(AsyncProviderMock): pass
-class MockTelegram(AsyncProviderMock): pass
-class MockChromaDB(AsyncProviderMock): pass
+class MockOpenAI(AsyncProviderMock):
+    pass
+
+
+class MockFinnhub(AsyncProviderMock):
+    pass
+
+
+class MockYahoo(AsyncProviderMock):
+    pass
+
+
+class MockSEC(AsyncProviderMock):
+    pass
+
+
+class MockTelegram(AsyncProviderMock):
+    pass
+
+
+class MockChromaDB(AsyncProviderMock):
+    pass
 
 
 class MockDatabase(AsyncProviderMock):

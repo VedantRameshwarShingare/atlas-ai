@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     timezone: str = Field(default="UTC", alias="TIMEZONE")
 
     @classmethod
-    def load(cls) -> "Settings":
+    def load(cls) -> Settings:
         """Load settings and raise a descriptive error on invalid values."""
         try:
             return cls()

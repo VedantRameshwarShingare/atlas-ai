@@ -15,5 +15,7 @@ pydantic-settings>=2.4.0
 python-dotenv>=1.0.0
 # Asynchronous HTTP client for external providers.
 httpx>=0.27.0
+# Multipart form parser required for file uploads.
+python-multipart>=0.0.9
 # Structured logging.
 loguru>=0.7.0

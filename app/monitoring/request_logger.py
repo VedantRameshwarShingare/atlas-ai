@@ -16,7 +16,9 @@ from app.monitoring.tracing import current_trace, end_trace, start_trace
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
     """Log one structured event per request and propagate correlation headers."""
 
-    def __init__(self, app: object, *, registry: MetricsRegistry = metrics, logger: logging.Logger | None = None) -> None:
+    def __init__(
+        self, app: object, *, registry: MetricsRegistry = metrics, logger: logging.Logger | None = None
+    ) -> None:
         super().__init__(app)  # type: ignore[arg-type]
         self.registry = registry
         self.logger = logger or logging.getLogger("atlas_ai.requests")
@@ -41,5 +43,15 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             self.registry.increment(REQUEST_COUNT, labels=labels)
             self.registry.observe(RESPONSE_TIME, elapsed, labels=labels)
             trace = current_trace()
-            self.logger.info("request_completed", extra={"request_id": trace.request_id if trace else None, "correlation_id": trace.correlation_id if trace else None, "method": request.method, "path": request.url.path, "status_code": status_code, "duration_seconds": elapsed})
+            self.logger.info(
+                "request_completed",
+                extra={
+                    "request_id": trace.request_id if trace else None,
+                    "correlation_id": trace.correlation_id if trace else None,
+                    "method": request.method,
+                    "path": request.url.path,
+                    "status_code": status_code,
+                    "duration_seconds": elapsed,
+                },
+            )
             end_trace(token)

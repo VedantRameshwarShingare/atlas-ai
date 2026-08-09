@@ -10,10 +10,10 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from app.telegram.handlers.errors import error_handler
 from app.telegram.handlers.message import message_handler
 from app.telegram.handlers.start import start_handler
-from app.telegram.router import TelegramRouter
 from app.telegram.middleware.authentication import AuthenticationMiddleware
 from app.telegram.middleware.logging import LoggingMiddleware
 from app.telegram.middleware.rate_limit import RateLimitMiddleware
+from app.telegram.router import TelegramRouter
 
 
 class AtlasTelegramBot:

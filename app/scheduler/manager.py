@@ -40,10 +40,12 @@ class SchedulerManager:
         scheduler: AsyncIOScheduler | None = None,
         registry: JobRegistry | None = None,
         timezone_name: str = "UTC",
+        capabilities: CapabilityRegistry | None = None,
     ) -> None:
         self.timezone = ZoneInfo(timezone_name)
         self.scheduler = scheduler or create_scheduler(timezone_name=timezone_name)
         self.registry = registry or JobRegistry()
+        self.capabilities = capabilities
         self._started = False
 
     @property
@@ -197,17 +199,96 @@ def build_default_scheduler_manager(
     timezone_name: str = "UTC",
 ) -> SchedulerManager:
     """Create Atlas' standard capability-backed schedule without application coupling."""
-    manager = SchedulerManager(timezone_name=timezone_name)
+    manager = SchedulerManager(
+        timezone_name=timezone_name,
+        capabilities=capabilities,
+    )
     jobs = (
-        ScheduledJob("morning_brief", "Morning brief", MorningBriefWorker(capabilities), build_cron_trigger("0 7 * * 1-5", timezone_name)),
-        ScheduledJob("watchlist_monitor", "Watchlist monitor", WatchlistMonitorWorker(capabilities), build_cron_trigger("*/15 9-16 * * 1-5", timezone_name)),
-        ScheduledJob("market_monitor", "Market monitor", MarketMonitorWorker(capabilities), build_cron_trigger("*/5 9-16 * * 1-5", timezone_name)),
-        ScheduledJob("earnings_monitor", "Earnings monitor", EarningsMonitorWorker(capabilities), build_interval_trigger(3600, timezone_name)),
-        ScheduledJob("alert_dispatcher", "Alert dispatcher", AlertDispatcherWorker(capabilities), build_interval_trigger(60, timezone_name)),
-        ScheduledJob("workspace_cleanup", "Workspace cleanup", WorkspaceCleanupWorker(capabilities), build_cron_trigger("0 3 * * *", timezone_name)),
-        ScheduledJob("document_processor", "Document processor", DocumentProcessorWorker(capabilities), build_interval_trigger(300, timezone_name)),
-        ScheduledJob("health_check", "Scheduler health check", HealthCheckWorker(capabilities), build_interval_trigger(60, timezone_name), max_retries=1),
+        ScheduledJob(
+            "morning_brief",
+            "Morning brief",
+            MorningBriefWorker(capabilities),
+            build_cron_trigger("0 7 * * 1-5", timezone_name),
+        ),
+        ScheduledJob(
+            "watchlist_monitor",
+            "Watchlist monitor",
+            WatchlistMonitorWorker(capabilities),
+            build_cron_trigger("*/15 9-16 * * 1-5", timezone_name),
+        ),
+        ScheduledJob(
+            "market_monitor",
+            "Market monitor",
+            MarketMonitorWorker(capabilities),
+            build_cron_trigger("*/5 9-16 * * 1-5", timezone_name),
+        ),
+        ScheduledJob(
+            "earnings_monitor",
+            "Earnings monitor",
+            EarningsMonitorWorker(capabilities),
+            build_interval_trigger(3600, timezone_name),
+        ),
+        ScheduledJob(
+            "alert_dispatcher",
+            "Alert dispatcher",
+            AlertDispatcherWorker(capabilities),
+            build_interval_trigger(60, timezone_name),
+        ),
+        ScheduledJob(
+            "workspace_cleanup",
+            "Workspace cleanup",
+            WorkspaceCleanupWorker(capabilities),
+            build_cron_trigger("0 3 * * *", timezone_name),
+        ),
+        ScheduledJob(
+            "document_processor",
+            "Document processor",
+            DocumentProcessorWorker(capabilities),
+            build_interval_trigger(300, timezone_name),
+        ),
+        ScheduledJob(
+            "health_check",
+            "Scheduler health check",
+            HealthCheckWorker(capabilities),
+            build_interval_trigger(60, timezone_name),
+            max_retries=1,
+        ),
     )
     for job in jobs:
         manager.register_job(job)
     return manager
+
+
+def register_persistent_job(
+    self,
+    job,
+    *,
+    worker,
+) -> None:
+    """Register a database-backed scheduled job with APScheduler."""
+
+    from app.scheduler.jobs.base import ScheduledJob as RuntimeScheduledJob
+
+    runtime_job = RuntimeScheduledJob(
+        id=str(job.id),
+        name=job.name,
+        worker=worker,
+        trigger=build_cron_trigger(
+            job.schedule,
+            job.timezone,
+        ),
+        enabled=job.enabled,
+        metadata={
+            "persistent_job_id": str(job.id),
+            "user_id": str(job.user_id),
+            "workspace_id": str(job.workspace_id) if job.workspace_id else None,
+            "job_type": job.job_type,
+            "payload": job.payload,
+        },
+    )
+
+    existing = self.scheduler.get_job(str(job.id))
+    if existing is not None:
+        self.scheduler.remove_job(str(job.id))
+
+    self.register_job(runtime_job)

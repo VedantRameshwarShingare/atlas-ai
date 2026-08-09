@@ -23,4 +23,4 @@ class DocumentChunk(Base, TimestampedMixin):
     content: Mapped[str] = mapped_column(Text, nullable=False)
     embedding_id: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
 
-    document: Mapped["Document"] = relationship(back_populates="chunks")
+    document: Mapped[Document] = relationship(back_populates="chunks")

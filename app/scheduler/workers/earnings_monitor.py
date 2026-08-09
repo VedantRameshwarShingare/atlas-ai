@@ -1,4 +1,5 @@
 """Upcoming, missed, and newly reported earnings worker."""
+
 from app.scheduler.workers.base import BaseWorker
 
 

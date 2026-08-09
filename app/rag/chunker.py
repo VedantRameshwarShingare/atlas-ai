@@ -25,14 +25,19 @@ class SemanticChunker:
         if not normalized_text:
             return []
         parts = [part.strip() for part in normalized_text.split("\n\n") if part.strip()]
-        chunks = []
+        chunks: list[Chunk] = []
+        base_metadata = metadata or {}
+        page = base_metadata.get("page")
         for index, part in enumerate(parts):
+            chunk_id = f"{document_id}:chunk:{index}"
+            if page is not None:
+                chunk_id = f"{document_id}:page:{page}:chunk:{index}"
             chunks.append(
                 Chunk(
-                    id=f"{document_id}:chunk:{index}",
+                    id=chunk_id,
                     document_id=document_id,
                     text=part,
-                    metadata={**(metadata or {}), "chunk_index": index},
+                    metadata={**base_metadata, "chunk_index": index},
                 )
             )
         return chunks

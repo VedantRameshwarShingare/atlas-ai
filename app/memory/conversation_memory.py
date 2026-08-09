@@ -13,7 +13,11 @@ class ConversationMemory:
 
     async def load_conversation(self, *, user_id: str, limit: int = 20) -> list[MemoryRecord]:
         """Load recent conversation entries."""
-        records = [record for record in self._records if record.user_id == user_id and record.category == MemoryCategory.CONVERSATION]
+        records = [
+            record
+            for record in self._records
+            if record.user_id == user_id and record.category == MemoryCategory.CONVERSATION
+        ]
         return records[-limit:]
 
     async def summarize_conversation(self, *, user_id: str) -> str:
@@ -25,7 +29,7 @@ class ConversationMemory:
 
     async def compress_context(self, *, user_id: str, limit: int = 10) -> list[MemoryRecord]:
         """Compress stored conversation context to a smaller list."""
-        return (await self.load_conversation(user_id=user_id, limit=limit))
+        return await self.load_conversation(user_id=user_id, limit=limit)
 
     async def select_relevant_history(self, *, user_id: str, query: str, limit: int = 5) -> list[MemoryRecord]:
         """Select conversation records relevant to the query."""

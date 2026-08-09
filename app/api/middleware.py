@@ -5,6 +5,8 @@ from __future__ import annotations
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 
+from app.core.logging.middleware import RequestIdMiddleware
+
 
 class BootstrapMiddleware(BaseHTTPMiddleware):
     """Pass requests through while reserving a single middleware extension point."""
@@ -15,5 +17,6 @@ class BootstrapMiddleware(BaseHTTPMiddleware):
 
 
 def add_api_middleware(app: FastAPI) -> None:
-    """Register the bootstrap middleware placeholder on the FastAPI application."""
+    """Register bootstrap and request-context middleware on the application."""
     app.add_middleware(BootstrapMiddleware)
+    app.add_middleware(RequestIdMiddleware)

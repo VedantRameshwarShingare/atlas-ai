@@ -18,4 +18,9 @@ class SearchTool(BaseTool):
     async def execute(self, **kwargs: Any) -> ToolResult:
         """Return a standardized placeholder result for future search integrations."""
         query = kwargs.get("query", "")
-        return ToolResult(success=True, tool_name=self.name, data={"query": query, "results": []}, warnings=["Search integrations are not implemented yet"])
+        return ToolResult(
+            success=True,
+            tool_name=self.name,
+            data={"query": query, "results": []},
+            warnings=["Search integrations are not implemented yet"],
+        )

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
 from app.api.dependencies import AuthenticatedUserDependency
 from app.api.responses import APIResponse

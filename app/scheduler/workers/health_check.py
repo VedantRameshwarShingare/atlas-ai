@@ -1,4 +1,5 @@
 """Scheduler and queue health-check worker."""
+
 from app.scheduler.workers.base import BaseWorker
 
 

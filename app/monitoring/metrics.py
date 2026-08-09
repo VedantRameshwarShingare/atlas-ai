@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from threading import Lock
 from time import perf_counter
-from typing import Iterator, Mapping
 
 Labels = Mapping[str, str | int | float | bool]
 
@@ -27,7 +27,9 @@ class MetricsRegistry:
     """In-process metrics, designed for later replacement by a Prometheus client."""
 
     _counters: dict[str, dict[tuple[tuple[str, str], ...], float]] = field(default_factory=lambda: defaultdict(dict))
-    _durations: dict[str, dict[tuple[tuple[str, str], ...], list[float]]] = field(default_factory=lambda: defaultdict(dict))
+    _durations: dict[str, dict[tuple[tuple[str, str], ...], list[float]]] = field(
+        default_factory=lambda: defaultdict(dict)
+    )
     _lock: Lock = field(default_factory=Lock)
 
     def increment(self, name: str, value: float = 1, *, labels: Labels | None = None) -> None:
@@ -40,7 +42,7 @@ class MetricsRegistry:
         with self._lock:
             self._durations[name].setdefault(key, []).append(seconds)
 
-    def timer(self, name: str, *, labels: Labels | None = None) -> "MetricTimer":
+    def timer(self, name: str, *, labels: Labels | None = None) -> MetricTimer:
         return MetricTimer(self, name, labels)
 
     def prometheus_text(self) -> str:
@@ -66,7 +68,7 @@ class MetricTimer:
         self._registry, self._name, self._labels = registry, name, labels
         self._started_at = 0.0
 
-    def __enter__(self) -> "MetricTimer":
+    def __enter__(self) -> MetricTimer:
         self._started_at = perf_counter()
         return self
 

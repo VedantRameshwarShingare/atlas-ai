@@ -1,4 +1,5 @@
 """Watchlist event monitoring worker."""
+
 from app.scheduler.workers.base import BaseWorker
 
 

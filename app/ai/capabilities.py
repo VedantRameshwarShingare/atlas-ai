@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Protocol
 
 from app.ai.enums import ToolType
-from app.ai.types import ToolResult
 
 
 class Capability(Protocol):
@@ -15,7 +14,7 @@ class Capability(Protocol):
     name: str
     description: str
 
-    async def execute(self, **kwargs: Any) -> Any:  # pragma: no cover - protocol stub
+    async def execute(self, **kwargs: Any) -> Any:
         """Execute the capability with the provided arguments."""
 
 
@@ -65,16 +64,42 @@ class CapabilityExecutor:
     def __init__(self, registry: CapabilityRegistry) -> None:
         self._registry = registry
 
-    async def execute_many(self, capability_names: list[str], **kwargs: Any) -> list[CapabilityExecutionResult]:
+    async def execute_many(
+        self,
+        capability_names: list[str],
+        **kwargs: Any,
+    ) -> list[CapabilityExecutionResult]:
         results: list[CapabilityExecutionResult] = []
+
         for name in capability_names:
             capability = self._registry.get(name)
+
             if capability is None:
-                results.append(CapabilityExecutionResult(capability_name=name, success=False, error="Capability not found"))
+                results.append(
+                    CapabilityExecutionResult(
+                        capability_name=name,
+                        success=False,
+                        error="Capability not found",
+                    )
+                )
                 continue
+
             try:
                 output = await capability.execute(**kwargs)
-                results.append(CapabilityExecutionResult(capability_name=capability.name, success=True, output=output))
+                results.append(
+                    CapabilityExecutionResult(
+                        capability_name=capability.name,
+                        success=True,
+                        output=output,
+                    )
+                )
             except Exception as exc:  # pragma: no cover - boundary handling
-                results.append(CapabilityExecutionResult(capability_name=capability.name, success=False, error=str(exc)))
+                results.append(
+                    CapabilityExecutionResult(
+                        capability_name=capability.name,
+                        success=False,
+                        error=str(exc),
+                    )
+                )
+
         return results

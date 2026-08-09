@@ -13,14 +13,20 @@ class LongTermMemory:
 
     async def load(self, *, user_id: str, key: str | None = None, limit: int = 50) -> list[MemoryRecord]:
         """Load long-term memory entries."""
-        records = [record for record in self._records if record.user_id == user_id and record.category == MemoryCategory.LONG_TERM]
+        records = [
+            record
+            for record in self._records
+            if record.user_id == user_id and record.category == MemoryCategory.LONG_TERM
+        ]
         if key is not None:
             records = [record for record in records if record.key == key]
         return records[-limit:]
 
     async def save(self, *, user_id: str, key: str, value: object, metadata: dict | None = None) -> MemoryRecord:
         """Persist a long-term memory entry."""
-        record = MemoryRecord(user_id=user_id, category=MemoryCategory.LONG_TERM, key=key, value=value, metadata=metadata or {})
+        record = MemoryRecord(
+            user_id=user_id, category=MemoryCategory.LONG_TERM, key=key, value=value, metadata=metadata or {}
+        )
         self._records.append(record)
         return record
 
@@ -38,5 +44,9 @@ class LongTermMemory:
 
     async def search(self, *, user_id: str, query: str, limit: int = 10) -> list[MemoryRecord]:
         """Search long-term memory entries by query text."""
-        matches = [record for record in self._records if record.user_id == user_id and query.lower() in str(record.value).lower()]
+        matches = [
+            record
+            for record in self._records
+            if record.user_id == user_id and query.lower() in str(record.value).lower()
+        ]
         return matches[-limit:]

@@ -1,4 +1,5 @@
 """Asynchronous document parse/chunk/embed/store worker."""
+
 from app.scheduler.workers.base import BaseWorker
 
 

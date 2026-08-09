@@ -12,7 +12,12 @@ def _record(values: dict[str, Any], overrides: dict[str, object]) -> dict[str, A
 
 
 def user_factory(**overrides: object) -> dict[str, Any]:
-    values = {"id": str(uuid4()), "telegram_user_id": str(uuid4().int)[:12], "username": "atlas_test", "timezone": "UTC"}
+    values = {
+        "id": str(uuid4()),
+        "telegram_user_id": str(uuid4().int)[:12],
+        "username": "atlas_test",
+        "timezone": "UTC",
+    }
     return _record(values, overrides)
 
 
@@ -27,20 +32,46 @@ def workspace_factory(*, user_id: str | None = None, **overrides: object) -> dic
 
 
 def document_factory(*, user_id: str | None = None, **overrides: object) -> dict[str, Any]:
-    values = {"id": str(uuid4()), "user_id": user_id or str(uuid4()), "filename": "test.pdf", "document_type": "pdf", "file_path": "/tmp/test.pdf", "status": "uploaded"}
+    values = {
+        "id": str(uuid4()),
+        "user_id": user_id or str(uuid4()),
+        "filename": "test.pdf",
+        "document_type": "pdf",
+        "file_path": "/tmp/test.pdf",
+        "status": "uploaded",
+    }
     return _record(values, overrides)
 
 
 def message_factory(*, conversation_id: str | None = None, **overrides: object) -> dict[str, Any]:
-    values = {"id": str(uuid4()), "conversation_id": conversation_id or str(uuid4()), "role": "user", "content": "Test message", "metadata": {}}
+    values = {
+        "id": str(uuid4()),
+        "conversation_id": conversation_id or str(uuid4()),
+        "role": "user",
+        "content": "Test message",
+        "metadata": {},
+    }
     return _record(values, overrides)
 
 
 def watchlist_factory(*, user_id: str | None = None, **overrides: object) -> dict[str, Any]:
-    values = {"id": str(uuid4()), "user_id": user_id or str(uuid4()), "symbol": "ATLS", "company_name": "Atlas Inc.", "is_active": True}
+    values = {
+        "id": str(uuid4()),
+        "user_id": user_id or str(uuid4()),
+        "symbol": "ATLS",
+        "company_name": "Atlas Inc.",
+        "is_active": True,
+    }
     return _record(values, overrides)
 
 
 def alert_factory(*, user_id: str | None = None, **overrides: object) -> dict[str, Any]:
-    values = {"id": str(uuid4()), "user_id": user_id or str(uuid4()), "alert_type": "price", "symbol": "ATLS", "condition": "price > 100", "is_enabled": True}
+    values = {
+        "id": str(uuid4()),
+        "user_id": user_id or str(uuid4()),
+        "alert_type": "price",
+        "symbol": "ATLS",
+        "condition": "price > 100",
+        "is_enabled": True,
+    }
     return _record(values, overrides)

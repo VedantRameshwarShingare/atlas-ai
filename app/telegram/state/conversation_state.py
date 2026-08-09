@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.ai.types import ChatRequest, ChatResponse
 from app.ai.enums import ResponseType
+from app.ai.types import ChatRequest, ChatResponse
 
 
 class ConversationState:

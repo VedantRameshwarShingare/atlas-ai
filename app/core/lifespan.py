@@ -9,6 +9,7 @@ from fastapi import FastAPI
 
 from app.core.config import settings
 from app.core.logging import configure_logging
+from app.database.session import dispose_database_engine
 
 
 @asynccontextmanager
@@ -19,4 +20,4 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     try:
         yield
     finally:
-        pass
+        await dispose_database_engine()

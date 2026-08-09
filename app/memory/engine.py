@@ -42,7 +42,9 @@ class MemoryEngine:
         long_term = await self._long_term_memory.load(user_id=user_id, limit=limit)
         workspace = await self._workspace_memory.list_records(user_id=user_id)
         conversation = await self._conversation_memory.load_conversation(user_id=user_id, limit=limit)
-        merged_context = " | ".join(str(record.value) for record in [*short_term, *long_term, *workspace, *conversation] if str(record.value))
+        merged_context = " | ".join(
+            str(record.value) for record in [*short_term, *long_term, *workspace, *conversation] if str(record.value)
+        )
         return MemoryContext(
             user_id=user_id,
             short_term=short_term,
@@ -53,10 +55,21 @@ class MemoryEngine:
             metadata={"session_id": session_id},
         )
 
-    async def save_memory(self, *, user_id: str, category: str, key: str, value: Any, session_id: str | None = None, metadata: dict[str, Any] | None = None) -> MemoryRecord:
+    async def save_memory(
+        self,
+        *,
+        user_id: str,
+        category: str,
+        key: str,
+        value: Any,
+        session_id: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> MemoryRecord:
         """Save a memory entry into the appropriate store."""
         if category == "short_term":
-            return await self._short_term_memory.save(user_id=user_id, key=key, value=str(value), session_id=session_id, metadata=metadata)
+            return await self._short_term_memory.save(
+                user_id=user_id, key=key, value=str(value), session_id=session_id, metadata=metadata
+            )
         if category == "long_term":
             return await self._long_term_memory.save(user_id=user_id, key=key, value=value, metadata=metadata)
         if category == "workspace":

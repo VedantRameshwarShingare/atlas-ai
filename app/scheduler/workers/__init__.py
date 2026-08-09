@@ -9,4 +9,13 @@ from app.scheduler.workers.morning_brief import MorningBriefWorker
 from app.scheduler.workers.watchlist_monitor import WatchlistMonitorWorker
 from app.scheduler.workers.workspace_cleanup import WorkspaceCleanupWorker
 
-__all__ = ["AlertDispatcherWorker", "DocumentProcessorWorker", "EarningsMonitorWorker", "HealthCheckWorker", "MarketMonitorWorker", "MorningBriefWorker", "WatchlistMonitorWorker", "WorkspaceCleanupWorker"]
+__all__ = [
+    "AlertDispatcherWorker",
+    "DocumentProcessorWorker",
+    "EarningsMonitorWorker",
+    "HealthCheckWorker",
+    "MarketMonitorWorker",
+    "MorningBriefWorker",
+    "WatchlistMonitorWorker",
+    "WorkspaceCleanupWorker",
+]

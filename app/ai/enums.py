@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 
-class IntentType(str, Enum):
+class IntentType(StrEnum):
     """Supported intents for request routing."""
 
     CHAT = "CHAT"
@@ -18,10 +18,14 @@ class IntentType(str, Enum):
     MEETING_PREP = "MEETING_PREP"
     MORNING_BRIEF = "MORNING_BRIEF"
     SEARCH = "SEARCH"
+    FINANCE_QUOTE = "FINANCE_QUOTE"
+    FINANCE_COMPANY = "FINANCE_COMPANY"
+    FINANCE_HISTORY = "FINANCE_HISTORY"
+    FINANCE_SEARCH = "FINANCE_SEARCH"
     UNKNOWN = "UNKNOWN"
 
 
-class ToolType(str, Enum):
+class ToolType(StrEnum):
     """Supported tool categories for orchestration."""
 
     SEARCH = "SEARCH"
@@ -31,10 +35,11 @@ class ToolType(str, Enum):
     ALERT = "ALERT"
     MARKET = "MARKET"
     RESEARCH = "RESEARCH"
+    FINANCE = "FINANCE"
     UNKNOWN = "UNKNOWN"
 
 
-class ResponseType(str, Enum):
+class ResponseType(StrEnum):
     """Supported response output formats."""
 
     MARKDOWN = "MARKDOWN"

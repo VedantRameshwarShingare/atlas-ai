@@ -46,7 +46,7 @@ class JobRegistry:
     def record_result(self, job_id: str, result: JobResult) -> None:
         history = self._history[job_id]
         history.append(result)
-        del history[:-self._history_limit]
+        del history[: -self._history_limit]
 
     def history(self, job_id: str) -> list[JobResult]:
         return list(self._history.get(job_id, []))

@@ -13,6 +13,7 @@ from app.database.base import Base, TimestampedMixin
 if TYPE_CHECKING:
     from app.models.message import Message
     from app.models.user import User
+    from app.models.workspace import Workspace
 
 
 class Conversation(Base, TimestampedMixin):
@@ -21,9 +22,11 @@ class Conversation(Base, TimestampedMixin):
     __tablename__ = "conversations"
 
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    workspace_id: Mapped[str | None] = mapped_column(ForeignKey("workspaces.id"), nullable=True, index=True)
     title: Mapped[str | None] = mapped_column(String(255), nullable=True)
     status: Mapped[str] = mapped_column(String(50), default="active", nullable=False)
     last_message_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True, index=True)
 
-    user: Mapped["User"] = relationship(back_populates="conversations")
-    messages: Mapped[list["Message"]] = relationship(back_populates="conversation", cascade="all, delete-orphan")
+    user: Mapped[User] = relationship(back_populates="conversations")
+    workspace: Mapped[Workspace | None] = relationship(back_populates="conversations")
+    messages: Mapped[list[Message]] = relationship(back_populates="conversation", cascade="all, delete-orphan")

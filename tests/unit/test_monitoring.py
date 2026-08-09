@@ -12,7 +12,12 @@ from app.monitoring.tracing import capability_span, current_trace, end_trace, se
 
 @pytest.mark.asyncio
 async def test_health_checker_runs_async_probes() -> None:
-    checker = HealthChecker({name: (lambda: True) for name in ("application", "database", "openai", "finnhub", "yahoo", "sec", "chromadb", "scheduler")})
+    checker = HealthChecker(
+        {
+            name: (lambda: True)
+            for name in ("application", "database", "openai", "finnhub", "yahoo", "sec", "chromadb", "scheduler")
+        }
+    )
     report = await checker.check()
     assert report["healthy"] is True
 

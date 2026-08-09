@@ -24,4 +24,4 @@ class ResearchSession(Base, TimestampedMixin):
     status: Mapped[str] = mapped_column(String(50), default="pending", nullable=False)
     summary: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    user: Mapped["User"] = relationship(back_populates="research_sessions")
+    user: Mapped[User] = relationship(back_populates="research_sessions")

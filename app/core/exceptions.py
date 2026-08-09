@@ -25,3 +25,15 @@ class MemoryError(Exception):
 
 class AuthenticationError(Exception):
     """Raised when authentication fails."""
+
+
+class ConversationNotFoundError(Exception):
+    """Raised when a requested conversation is unavailable to the caller."""
+
+
+class ProviderConfigurationError(Exception):
+    """Raised when a required AI provider configuration value is missing."""
+
+
+class ProviderUnavailableError(Exception):
+    """Raised when an AI provider cannot complete a request safely."""

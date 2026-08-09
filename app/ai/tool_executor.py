@@ -32,22 +32,28 @@ class ToolExecutor:
                 continue
 
             try:
+                validator = getattr(tool, "validate", None)
+                if validator is not None:
+                    validator(**kwargs)
                 output = await tool.execute(**kwargs)
+                sources = list(getattr(output, "sources", []))
+                data = getattr(output, "data", output)
                 results.append(
                     ToolResult(
                         tool_name=tool.name,
                         tool_type=tool.tool_type,
                         success=True,
-                        output=output,
+                        output=data,
+                        metadata={"sources": sources},
                     )
                 )
-            except Exception as exc:  # pragma: no cover - boundary handling
+            except Exception:  # pragma: no cover - boundary handling
                 results.append(
                     ToolResult(
                         tool_name=tool.name,
                         tool_type=tool.tool_type,
                         success=False,
-                        error=str(exc),
+                        error="Tool execution failed",
                     )
                 )
 

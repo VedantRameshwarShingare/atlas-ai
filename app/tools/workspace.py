@@ -18,4 +18,9 @@ class WorkspaceTool(BaseTool):
     async def execute(self, **kwargs: Any) -> ToolResult:
         """Return a placeholder result for workspace management operations."""
         action = kwargs.get("action", "list")
-        return ToolResult(success=True, tool_name=self.name, data={"action": action, "workspace": None}, warnings=["Workspace integrations are not implemented yet"])
+        return ToolResult(
+            success=True,
+            tool_name=self.name,
+            data={"action": action, "workspace": None},
+            warnings=["Workspace integrations are not implemented yet"],
+        )

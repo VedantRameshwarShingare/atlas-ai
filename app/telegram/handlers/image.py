@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from telegram import Update
 from telegram.ext import ContextTypes
+
+from telegram import Update
 
 
 async def image_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

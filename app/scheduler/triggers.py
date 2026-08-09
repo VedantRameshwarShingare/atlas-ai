@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
 from zoneinfo import ZoneInfo
 
 from apscheduler.triggers.cron import CronTrigger
